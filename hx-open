@@ -1,22 +1,65 @@
 #!/usr/bin/env bash
 
-hx_open() {
-    local file="$1"
-    local direction="${2:-right}"
-    local split="${3:-v}"
-    local percent="${4:-80}"
+# Determine the script's directory and source config.sh
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+CONFIG_FILE="${SCRIPT_DIR}/hx-utils-modules/config.sh"
 
-    case $HX_MODE in
-        tmux)
-            handle_tmux "$direction" "$split" "$percent" "$file"
-            ;;
-        wezterm)
-            local pane_direction=$(get_pane_direction "$direction")
-            handle_wezterm "$pane_direction" "$direction" "$split" "$percent" "$file"
-            ;;
-    esac
+if [[ -f "$CONFIG_FILE" ]]; then
+    source "$CONFIG_FILE"
+else
+    echo "Error: config.sh not found. Please ensure hx-utils is properly installed."
+    exit 1
+fi
+
+# Function to display help
+show_help() {
+  echo "Usage: $(basename "$0") [OPTIONS] [FILE]"
+  echo "Options:"
+  echo "  -m, --mode [tmux|wezterm]  Specify the multiplexer mode. Auto-detected if not specified."
+  echo "  -d, --direction [DIRECTION]  Specify the pane direction ('top', 'bottom', 'left', 'right'). Default is 'right'."
+  echo "  -s, --split [TYPE]  Specify the split type ('v' for vertical, 'h' for horizontal, 'none' for no split)."
+  echo "  -p, --percent [PERCENT] Specify the default panel size percentage"
+  echo "  -h, --help  Display this help and exit."
 }
 
+# Default values
+mode=""
+direction="right"
+split=""
+percent=80
+
+# Parse command-line options
+while [[ "$#" -gt 0 ]]; do
+  case $1 in
+    -m|--mode) mode="$2"; shift 2 ;;
+    -d|--direction) direction="$2"; shift 2 ;;
+    -p|--percent) percent="$2"; shift 2 ;;
+    -s|--split) split="$2"; shift 2 ;;
+    -h|--help) show_help; exit 0 ;;
+    -*) echo "Unknown option: $1" >&2; show_help; exit 1 ;;
+    *) fpath="$1"; shift ;;
+  esac
+done
+
+if [[ -z "$fpath" ]]; then
+  echo "Error: File path is required."
+  show_help
+  exit 1
+fi
+
+# Determine the mode based on environment variables if not specified
+if [[ -z "$mode" ]]; then
+  if [[ -n "$TMUX" ]]; then
+    mode="tmux"
+  elif [[ -n "$WEZTERM_PANE" ]]; then
+    mode="wezterm"
+  else
+    echo "Error: Multiplexer mode could not be determined. Please specify --mode."
+    exit 1
+  fi
+fi
+
+# Function to handle tmux
 handle_tmux() {
     local direction="$1"
     local split="$2"
@@ -64,6 +107,7 @@ handle_tmux() {
     fi
 }
 
+# Function to handle wezterm
 handle_wezterm() {
     local pane_direction="$1"
     local direction="$2"
@@ -95,3 +139,16 @@ handle_wezterm() {
 
     wezterm cli activate-pane-direction --pane-id $pane_id "$pane_direction"
 }
+
+# Main logic based on mode
+case $mode in
+  tmux)
+    handle_tmux "$direction" "$split" "$percent"  "$fpath"
+    ;;
+  wezterm)
+    pane_direction=$(get_pane_direction "$direction")
+    handle_wezterm "$pane_direction" "$direction" "$split" "$percent"  "$fpath"
+    ;;
+  *) echo "Error: Unsupported mode '$mode'." >&2; exit 1 ;;
+esac
+

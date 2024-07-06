@@ -82,6 +82,61 @@ A fuzzy finder utility for Helix.
 hx-fzf
 ```
 
+### hx-open
+
+`hx-open` is a standalone script designed to open files in the Helix editor from the terminal or other programs. It supports both tmux and WezTerm terminal multiplexers.
+
+#### Usage
+
+```bash
+hx-open [OPTIONS] [FILE]
+```
+
+#### Options
+
+- `-m, --mode [tmux|wezterm]`: Specify the multiplexer mode. Auto-detected if not specified.
+- `-d, --direction [DIRECTION]`: Specify the pane direction ('top', 'bottom', 'left', 'right'). Default is 'right'.
+- `-s, --split [TYPE]`: Specify the split type ('v' for vertical, 'h' for horizontal, 'none' for no split).
+- `-p, --percent [PERCENT]`: Specify the default panel size percentage. Default is 80.
+- `-h, --help`: Display help and exit.
+
+#### Examples
+
+1. Open a file in the default right pane:
+   ```bash
+   hx-open /path/to/file.txt
+   ```
+
+2. Open a file in a new vertical split with 70% width:
+   ```bash
+   hx-open -d right -s v -p 70 /path/to/file.txt
+   ```
+
+3. Open a file in a new horizontal split at the bottom:
+   ```bash
+   hx-open -d bottom -s h /path/to/file.txt
+   ```
+
+4. Explicitly specify the multiplexer mode:
+   ```bash
+   hx-open -m tmux /path/to/file.txt
+   ```
+
+#### Integration with Other Programs
+
+You can set `hx-open` as the default editor for various programs. For example:
+
+- Git: `git config --global core.editor "hx-open"`
+- Environment variable: Add `export EDITOR="hx-open"` to your shell configuration file (e.g., `.bashrc` or `.zshrc`)
+
+This allows `hx-open` to be used seamlessly with other command-line tools that invoke an editor.
+
+#### Notes
+
+- `hx-open` requires either tmux or WezTerm to be running.
+- It attempts to reuse existing Helix instances if possible, opening new files in splits within the same instance.
+- The script sources `config.sh` from the hx-utils installation, ensuring consistent behavior with other hx-utils scripts.
+
 ## Updating
 
 To update hx-utils to the latest version:
