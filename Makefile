@@ -1,0 +1,51 @@
+# Makefile for hx-utils
+
+# Default installation directory
+INSTALL_DIR := $(HOME)/.local/bin
+
+# Source files
+SOURCES := hx-utils.sh config.sh modules/hx-open.sh modules/hx-integration.sh hx-fzf winmux
+
+# Targets
+.PHONY: all install uninstall update clean help
+
+all: install
+
+install:
+	@echo "Installing hx-utils..."
+	@mkdir -p $(INSTALL_DIR)/hx-utils-modules
+	@cp hx-utils.sh $(INSTALL_DIR)/hx-utils
+	@cp config.sh $(INSTALL_DIR)/hx-utils-modules/
+	@cp modules/*.sh $(INSTALL_DIR)/hx-utils-modules/
+	@cp hx-fzf $(INSTALL_DIR)/
+	@cp winmux $(INSTALL_DIR)/
+	@chmod +x $(INSTALL_DIR)/hx-utils
+	@chmod +x $(INSTALL_DIR)/hx-fzf
+	@chmod +x $(INSTALL_DIR)/winmux
+	@echo "Installation complete. Please add $(INSTALL_DIR) to your PATH if it's not already there."
+
+uninstall:
+	@echo "Uninstalling hx-utils..."
+	@rm -f $(INSTALL_DIR)/hx-utils
+	@rm -f $(INSTALL_DIR)/hx-fzf
+	@rm -f $(INSTALL_DIR)/winmux
+	@rm -rf $(INSTALL_DIR)/hx-utils-modules
+	@echo "Uninstallation complete."
+
+update: uninstall install
+	@echo "hx-utils has been updated."
+
+clean:
+	@echo "Cleaning up..."
+	@rm -f $(INSTALL_DIR)/hx-utils
+	@rm -f $(INSTALL_DIR)/hx-fzf
+	@rm -f $(INSTALL_DIR)/winmux
+	@rm -rf $(INSTALL_DIR)/hx-utils-modules
+
+help:
+	@echo "Available commands:"
+	@echo "  make install   - Install hx-utils"
+	@echo "  make uninstall - Uninstall hx-utils"
+	@echo "  make update    - Update hx-utils"
+	@echo "  make clean     - Remove installed files"
+	@echo "  make help      - Show this help message"
