@@ -82,10 +82,6 @@ A fuzzy finder utility for Helix.
 hx-fzf
 ```
 
-## Configuration
-
-The default configuration should work for most setups. If you need to modify any settings, you can edit the `config.sh` file in the installation directory.
-
 ## Updating
 
 To update hx-utils to the latest version:
