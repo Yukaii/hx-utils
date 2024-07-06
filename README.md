@@ -43,6 +43,19 @@ The original scripts have been significantly modified and extended to support mu
 
 ## Usage
 
+### Example helix config
+
+```toml
+[keys.normal.space]
+e = ":sh hx-utils explorer"
+
+[keys.normal.";"]
+b = ":sh hx-utils blame"
+o = ":sh hx-utils open"
+f = ":sh winmux sp hx-fzf > /dev/null"
+t = ":sh winmux sp fish > /dev/null"
+```
+
 ### hx-utils
 
 The main utility script. Use it to open files or integrate with other tools.
