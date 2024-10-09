@@ -3,9 +3,6 @@
 # Default installation directory
 INSTALL_DIR := $(HOME)/.local/bin
 
-# Source files
-SOURCES := hx-utils.sh config.sh modules/hx-integration.sh hx-grep winmux hx-open
-
 # Targets
 .PHONY: all install uninstall update clean help
 
@@ -13,25 +10,20 @@ all: install
 
 install:
 	@echo "Installing hx-utils..."
+
+	@mkdir -p $(INSTALL_DIR)/hx-utils-bin
+	@cp scripts/* $(INSTALL_DIR)/hx-utils-bin
+
 	@mkdir -p $(INSTALL_DIR)/hx-utils-modules
 	@cp modules/*.sh $(INSTALL_DIR)/hx-utils-modules/
 	# setup binaries
-	@cp hx-utils.sh $(INSTALL_DIR)/hx-utils
-	@cp hx-grep $(INSTALL_DIR)/
-	@cp winmux $(INSTALL_DIR)/
-	@chmod +x $(INSTALL_DIR)/hx-utils
-	@chmod +x $(INSTALL_DIR)/hx-grep
-	@chmod +x $(INSTALL_DIR)/winmux
-	# done
-	@echo "Installation complete. Please add $(INSTALL_DIR) to your PATH if it's not already there."
+	@chmod +x $(INSTALL_DIR)/hx-utils-bin/*
+	@echo "Installation complete. Please add $(INSTALL_DIR)/hx-utils-bin to your PATH if it's not already there."
 
 uninstall:
 	@echo "Uninstalling hx-utils..."
-	@rm -f $(INSTALL_DIR)/hx-utils
-	@rm -f $(INSTALL_DIR)/hx-grep
-	@rm -f $(INSTALL_DIR)/winmux
-	@rm -f $(INSTALL_DIR)/hx-open
 	@rm -rf $(INSTALL_DIR)/hx-utils-modules
+	@rm -rf $(INSTALL_DIR)/hx-utils-bin
 	@echo "Uninstallation complete."
 
 update: uninstall install
@@ -39,11 +31,8 @@ update: uninstall install
 
 clean:
 	@echo "Cleaning up..."
-	@rm -f $(INSTALL_DIR)/hx-utils
-	@rm -f $(INSTALL_DIR)/hx-grep
-	@rm -f $(INSTALL_DIR)/winmux
-	@rm -f $(INSTALL_DIR)/hx-open
 	@rm -rf $(INSTALL_DIR)/hx-utils-modules
+	@rm -rf $(INSTALL_DIR)/hx-utils-bin
 
 help:
 	@echo "Available commands:"

@@ -2,7 +2,7 @@
 
 # Determine the script's directory
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-MODULES_DIR="${SCRIPT_DIR}/hx-utils-modules"
+MODULES_DIR="$(dirname "${SCRIPT_DIR}")/hx-utils-modules"
 
 # Source configuration
 source "${MODULES_DIR}/config.sh"
