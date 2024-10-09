@@ -51,8 +51,7 @@ e = ":sh hx-utils explorer"
 
 [keys.normal.";"]
 b = ":sh hx-utils blame"
-o = ":sh hx-utils open"
-f = ":sh winmux sp hx-fzf > /dev/null"
+f = ":sh winmux sp hx-grep > /dev/null"
 t = ":sh winmux sp fish > /dev/null"
 ```
 
@@ -64,7 +63,7 @@ The main utility script. Use it to open files or integrate with other tools.
 hx-utils open [FILE]
 hx-utils blame
 hx-utils explorer
-hx-utils fzf
+hx-utils grep
 hx-utils browse
 ```
 
@@ -87,12 +86,12 @@ Commands:
 - `focus-left`, `focus-right`, `focus-up`, `focus-down`: Focus on adjacent panes
 - `popup`: Create a popup window
 
-### hx-fzf
+### hx-grep
 
 A fuzzy finder utility for Helix.
 
 ```bash
-hx-fzf
+hx-grep
 ```
 
 ### hx-open

@@ -4,7 +4,7 @@
 INSTALL_DIR := $(HOME)/.local/bin
 
 # Source files
-SOURCES := hx-utils.sh config.sh modules/hx-integration.sh hx-fzf winmux hx-open
+SOURCES := hx-utils.sh config.sh modules/hx-integration.sh hx-grep winmux hx-open
 
 # Targets
 .PHONY: all install uninstall update clean help
@@ -17,17 +17,17 @@ install:
 	@cp hx-utils.sh $(INSTALL_DIR)/hx-utils
 	@cp config.sh $(INSTALL_DIR)/hx-utils-modules/
 	@cp modules/*.sh $(INSTALL_DIR)/hx-utils-modules/
-	@cp hx-fzf $(INSTALL_DIR)/
+	@cp hx-grep $(INSTALL_DIR)/
 	@cp winmux $(INSTALL_DIR)/
 	@chmod +x $(INSTALL_DIR)/hx-utils
-	@chmod +x $(INSTALL_DIR)/hx-fzf
+	@chmod +x $(INSTALL_DIR)/hx-grep
 	@chmod +x $(INSTALL_DIR)/winmux
 	@echo "Installation complete. Please add $(INSTALL_DIR) to your PATH if it's not already there."
 
 uninstall:
 	@echo "Uninstalling hx-utils..."
 	@rm -f $(INSTALL_DIR)/hx-utils
-	@rm -f $(INSTALL_DIR)/hx-fzf
+	@rm -f $(INSTALL_DIR)/hx-grep
 	@rm -f $(INSTALL_DIR)/winmux
 	@rm -f $(INSTALL_DIR)/hx-open
 	@rm -rf $(INSTALL_DIR)/hx-utils-modules
@@ -39,7 +39,7 @@ update: uninstall install
 clean:
 	@echo "Cleaning up..."
 	@rm -f $(INSTALL_DIR)/hx-utils
-	@rm -f $(INSTALL_DIR)/hx-fzf
+	@rm -f $(INSTALL_DIR)/hx-grep
 	@rm -f $(INSTALL_DIR)/winmux
 	@rm -f $(INSTALL_DIR)/hx-open
 	@rm -rf $(INSTALL_DIR)/hx-utils-modules

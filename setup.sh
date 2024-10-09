@@ -56,7 +56,7 @@ fi
 
 echo "Setup complete!"
 echo "Detected multiplexer: $MULTIPLEXER"
-echo "You can now use 'hx-utils', 'hx-fzf', and 'winmux' commands."
+echo "You can now use 'hx-utils', 'hx-grep', and 'winmux' commands."
 echo "Type 'hx-utils help' for usage information on hx-utils."
 echo "Type 'winmux --help' for usage information on winmux."
 

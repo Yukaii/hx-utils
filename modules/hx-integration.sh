@@ -24,8 +24,8 @@ hx_integration() {
         explorer)
             hx_explorer
             ;;
-        fzf)
-            hx_fzf
+        grep)
+            hx_grep
             ;;
         browse)
             hx_browse
@@ -89,8 +89,8 @@ hx_explorer_wezterm() {
     fi
 }
 
-hx_fzf() {
-    winmux sp "hx-fzf"
+hx_grep() {
+    winmux sp "hx-grep"
 }
 
 hx_browse() {

@@ -18,12 +18,12 @@ main() {
             shift
             hx_open "$@"
             ;;
-        blame|explorer|fzf|browse)
+        blame|explorer|grep|browse)
             hx_integration "$@"
             ;;
         *)
             echo "Unknown command: $1"
-            echo "Available commands: open, blame, explorer, fzf, browse"
+            echo "Available commands: open, blame, explorer, grep, browse"
             exit 1
             ;;
     esac
