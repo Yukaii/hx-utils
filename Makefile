@@ -15,7 +15,6 @@ install:
 	@echo "Installing hx-utils..."
 	@mkdir -p $(INSTALL_DIR)/hx-utils-modules
 	@cp hx-utils.sh $(INSTALL_DIR)/hx-utils
-	@cp config.sh $(INSTALL_DIR)/hx-utils-modules/
 	@cp modules/*.sh $(INSTALL_DIR)/hx-utils-modules/
 	@cp hx-grep $(INSTALL_DIR)/
 	@cp winmux $(INSTALL_DIR)/
