@@ -22,42 +22,57 @@ show_help() {
   echo "  -h, --help  Display this help and exit."
 }
 
-# Default values
-mode=""
-direction="right"
-split=""
-percent=80
+hx_open() {
+  # Default values
+  mode=""
+  direction="right"
+  split=""
+  percent=80
 
-# Parse command-line options
-while [[ "$#" -gt 0 ]]; do
-  case $1 in
-    -m|--mode) mode="$2"; shift 2 ;;
-    -d|--direction) direction="$2"; shift 2 ;;
-    -p|--percent) percent="$2"; shift 2 ;;
-    -s|--split) split="$2"; shift 2 ;;
-    -h|--help) show_help; exit 0 ;;
-    -*) echo "Unknown option: $1" >&2; show_help; exit 1 ;;
-    *) fpath="$1"; shift ;;
-  esac
-done
+  # Parse command-line options
+  while [[ "$#" -gt 0 ]]; do
+    case $1 in
+      -m|--mode) mode="$2"; shift 2 ;;
+      -d|--direction) direction="$2"; shift 2 ;;
+      -p|--percent) percent="$2"; shift 2 ;;
+      -s|--split) split="$2"; shift 2 ;;
+      -h|--help) show_help; exit 0 ;;
+      -*) echo "Unknown option: $1" >&2; show_help; exit 1 ;;
+      *) fpath="$1"; shift ;;
+    esac
+  done
 
-if [[ -z "$fpath" ]]; then
-  echo "Error: File path is required."
-  show_help
-  exit 1
-fi
-
-# Determine the mode based on environment variables if not specified
-if [[ -z "$mode" ]]; then
-  if [[ -n "$TMUX" ]]; then
-    mode="tmux"
-  elif [[ -n "$WEZTERM_PANE" ]]; then
-    mode="wezterm"
-  else
-    echo "Error: Multiplexer mode could not be determined. Please specify --mode."
+  if [[ -z "$fpath" ]]; then
+    echo "Error: File path is required."
+    show_help
     exit 1
   fi
-fi
+
+  # Determine the mode based on environment variables if not specified
+  if [[ -z "$mode" ]]; then
+    if [[ -n "$TMUX" ]]; then
+      mode="tmux"
+    elif [[ -n "$WEZTERM_PANE" ]]; then
+      mode="wezterm"
+    else
+      echo "Error: Multiplexer mode could not be determined. Please specify --mode."
+      exit 1
+    fi
+  fi
+
+  # Main logic based on mode
+  case $mode in
+    tmux)
+      handle_tmux "$direction" "$split" "$percent"  "$fpath"
+      ;;
+    wezterm)
+      pane_direction=$(get_pane_direction "$direction")
+      handle_wezterm "$pane_direction" "$direction" "$split" "$percent"  "$fpath"
+      ;;
+    *) echo "Error: Unsupported mode '$mode'." >&2; exit 1 ;;
+  esac
+}
+
 
 # Function to handle tmux
 handle_tmux() {
@@ -139,16 +154,3 @@ handle_wezterm() {
 
     wezterm cli activate-pane-direction --pane-id $pane_id "$pane_direction"
 }
-
-# Main logic based on mode
-case $mode in
-  tmux)
-    handle_tmux "$direction" "$split" "$percent"  "$fpath"
-    ;;
-  wezterm)
-    pane_direction=$(get_pane_direction "$direction")
-    handle_wezterm "$pane_direction" "$direction" "$split" "$percent"  "$fpath"
-    ;;
-  *) echo "Error: Unsupported mode '$mode'." >&2; exit 1 ;;
-esac
-
