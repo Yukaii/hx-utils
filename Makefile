@@ -19,11 +19,9 @@ install:
 	@cp modules/*.sh $(INSTALL_DIR)/hx-utils-modules/
 	@cp hx-fzf $(INSTALL_DIR)/
 	@cp winmux $(INSTALL_DIR)/
-	@cp hx-open $(INSTALL_DIR)/
 	@chmod +x $(INSTALL_DIR)/hx-utils
 	@chmod +x $(INSTALL_DIR)/hx-fzf
 	@chmod +x $(INSTALL_DIR)/winmux
-	@chmod +x $(INSTALL_DIR)/hx-open
 	@echo "Installation complete. Please add $(INSTALL_DIR) to your PATH if it's not already there."
 
 uninstall:
@@ -53,4 +51,3 @@ help:
 	@echo "  make update    - Update hx-utils"
 	@echo "  make clean     - Remove installed files"
 	@echo "  make help      - Show this help message"
-

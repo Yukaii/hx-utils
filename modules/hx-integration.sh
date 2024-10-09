@@ -90,7 +90,7 @@ hx_explorer_wezterm() {
 }
 
 hx_fzf() {
-    winmux popup "sh hx-fzf.sh"
+    winmux popup "hx-fzf"
 }
 
 hx_browse() {
