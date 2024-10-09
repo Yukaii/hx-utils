@@ -1,16 +1,5 @@
 #!/usr/bin/env bash
 
-# Determine the script's directory and source config.sh
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-CONFIG_FILE="${SCRIPT_DIR}/hx-utils-modules/config.sh"
-
-if [[ -f "$CONFIG_FILE" ]]; then
-    source "$CONFIG_FILE"
-else
-    echo "Error: config.sh not found. Please ensure hx-utils is properly installed."
-    exit 1
-fi
-
 # Function to display help
 show_help() {
   echo "Usage: $(basename "$0") [OPTIONS] [FILE]"
