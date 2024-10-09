@@ -90,7 +90,7 @@ hx_explorer_wezterm() {
 }
 
 hx_fzf() {
-    winmux popup "hx-fzf"
+    winmux sp "hx-fzf"
 }
 
 hx_browse() {
