@@ -14,13 +14,15 @@ all: install
 install:
 	@echo "Installing hx-utils..."
 	@mkdir -p $(INSTALL_DIR)/hx-utils-modules
-	@cp hx-utils.sh $(INSTALL_DIR)/hx-utils
 	@cp modules/*.sh $(INSTALL_DIR)/hx-utils-modules/
+	# setup binaries
+	@cp hx-utils.sh $(INSTALL_DIR)/hx-utils
 	@cp hx-grep $(INSTALL_DIR)/
 	@cp winmux $(INSTALL_DIR)/
 	@chmod +x $(INSTALL_DIR)/hx-utils
 	@chmod +x $(INSTALL_DIR)/hx-grep
 	@chmod +x $(INSTALL_DIR)/winmux
+	# done
 	@echo "Installation complete. Please add $(INSTALL_DIR) to your PATH if it's not already there."
 
 uninstall:

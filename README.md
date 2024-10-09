@@ -50,8 +50,8 @@ The original scripts have been significantly modified and extended to support mu
 e = ":sh hx-utils explorer"
 
 [keys.normal.";"]
-b = ":sh hx-utils blame"
-f = ":sh winmux sp hx-grep > /dev/null"
+b = ":sh hx-utils blame > /dev/null"
+f = ":sh hx-utils grep > /dev/null"
 t = ":sh winmux sp fish > /dev/null"
 ```
 
