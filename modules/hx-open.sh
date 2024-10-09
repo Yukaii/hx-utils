@@ -137,6 +137,9 @@ handle_wezterm() {
 
     local program=$(wezterm cli list | awk -v pane_id="$pane_id" '$3==pane_id { print $6 }')
     if [ "$program" = "hx" ]; then
+        # enter
+        send_esc 3
+
         if [ -n "$split" ]; then
             case $split in
                 v)
@@ -153,4 +156,17 @@ handle_wezterm() {
     fi
 
     wezterm cli activate-pane-direction --pane-id $pane_id "$pane_direction"
+}
+
+send_esc() {
+    local count=${1:-1}  # Default to 1 if no argument is provided
+
+    if ! [[ "$count" =~ ^[0-9]+$ ]]; then
+        echo "Error: Please provide a valid positive integer."
+        return 1
+    fi
+
+    for ((i=0; i<count; i++)); do
+        wezterm cli send-text --no-paste $'\e'
+    done
 }
