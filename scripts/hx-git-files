@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# pick files from git ls-files
+#
+# requires:
+# - fzf (https://github.com/junegunn/fzf)
+# - bat (change to your liking) (https://github.com/sharkdp/bat)
+
+preview_cmd="bat --color=always --line-range=:500"
+history_file="$HOME/.cache/hx-files-history"
+
+# Ensure history file exists
+[ -f "$history_file" ] || touch "$history_file"
+
+# List files in the git repository and allow user to select using fzf
+selected_files=$(git ls-files --full-name "$(git rev-parse --show-toplevel)" "$@" |
+    fzf --multi --height 100% --prompt 'files> ' \
+        --preview "$preview_cmd {}" --history="$history_file" --delimiter : --bind 'ctrl-q:select-all+accept')
+
+# Check if files were selected
+if [ -n "$selected_files" ]; then
+    # Open each selected file with hx-utils
+    echo "$selected_files" | while read -r file; do
+        hx-utils open -d top "$file"
+    done
+fi

@@ -30,6 +30,9 @@ hx_integration() {
         browse)
             hx_browse
             ;;
+        git-files)
+            hx_git_files
+            ;;
         *)
             echo "Unknown integration command: $command"
             exit 1
@@ -91,6 +94,10 @@ hx_explorer_wezterm() {
 
 hx_grep() {
     winmux sp "hx-grep"
+}
+
+hx_git_files() {
+    winmux sp "hx-git-files"
 }
 
 hx_browse() {
