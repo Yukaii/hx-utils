@@ -33,7 +33,10 @@ hx_integration() {
         git-files)
             hx_git_files
             ;;
-        *)
+        git-changed-files)
+            hx_git_changed_files
+            ;;
+       *)
             echo "Unknown integration command: $command"
             exit 1
             ;;
@@ -98,6 +101,10 @@ hx_grep() {
 
 hx_git_files() {
     winmux sp "hx-git-files"
+}
+
+hx_git_changed_files() {
+    winmux sp "hx-git-changed-files"
 }
 
 hx_browse() {
