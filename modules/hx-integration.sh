@@ -19,6 +19,18 @@ hx_integration() {
 
     show_subcommand_help() {
         case "$1" in
+            open)
+                echo "Usage: hx open [FILE] [DIRECTION] [SPLIT] [PERCENT]"
+                echo ""
+                echo "Open a file in Helix editor."
+                echo ""
+                echo "Options:"
+                echo "  FILE      The file to open."
+                echo "  DIRECTION The direction to split the pane (default: right)."
+                echo "  SPLIT     The type of split (v for vertical, h for horizontal, default: v)."
+                echo "  PERCENT   The percentage of the pane size (default: 80)."
+                echo "  --help    Show this help message"
+                ;;
             blame)
                 echo "Usage: hx blame [OPTIONS]"
                 echo ""
@@ -75,6 +87,13 @@ hx_integration() {
     }
 
     case "$command" in
+        open)
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help open
+            else
+                hx_open "$@"
+            fi
+            ;;
         blame)
             if [ "$1" = "--help" ]; then
                 show_subcommand_help blame
