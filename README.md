@@ -20,6 +20,14 @@ The original scripts have been significantly modified and extended to support mu
 - Git file and changed file listing
 - Web browsing integration for files at specific line numbers
 
+## Screenshots
+
+![broot](./docs/images/broot.png)
+
+![winmux-lazygit](./docs/images/winmux-lazygit.png)
+
+![fzf-git-files](./docs/images/fzf-git-files.png)
+
 ## Prerequisites
 
 - Helix editor
