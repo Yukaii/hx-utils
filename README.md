@@ -44,7 +44,7 @@ The original scripts have been significantly modified and extended to support mu
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/hx-utils.git
+   git clone https://github.com/Yukaii/hx-utils.git
    cd hx-utils
    ```
 
