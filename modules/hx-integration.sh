@@ -17,26 +17,107 @@ hx_integration() {
     local command="$1"
     shift
 
+    show_subcommand_help() {
+        case "$1" in
+            blame)
+                echo "Usage: hx blame [OPTIONS]"
+                echo ""
+                echo "Show git blame information for the current file."
+                echo ""
+                echo "Options:"
+                echo "  --help    Show this help message"
+                ;;
+            explorer)
+                echo "Usage: hx explorer [OPTIONS]"
+                echo ""
+                echo "Open file explorer."
+                echo ""
+                echo "Options:"
+                echo "  --help    Show this help message"
+                ;;
+            grep)
+                echo "Usage: hx grep [OPTIONS]"
+                echo ""
+                echo "Search for a pattern in files."
+                echo ""
+                echo "Options:"
+                echo "  --help    Show this help message"
+                ;;
+            browse)
+                echo "Usage: hx browse [OPTIONS]"
+                echo ""
+                echo "Open a URL in the default browser."
+                echo ""
+                echo "Options:"
+                echo "  --help    Show this help message"
+                ;;
+            git-files)
+                echo "Usage: hx git-files [OPTIONS]"
+                echo ""
+                echo "List files tracked by git."
+                echo ""
+                echo "Options:"
+                echo "  --help    Show this help message"
+                ;;
+            git-changed-files)
+                echo "Usage: hx git-changed-files [OPTIONS]"
+                echo ""
+                echo "List files changed in git."
+                echo ""
+                echo "Options:"
+                echo "  --help    Show this help message"
+                ;;
+            *)
+                echo "Unknown subcommand: $1"
+                exit 1
+                ;;
+        esac
+    }
+
     case "$command" in
         blame)
-            hx_blame
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help blame
+            else
+                hx_blame
+            fi
             ;;
         explorer)
-            hx_explorer
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help explorer
+            else
+                hx_explorer
+            fi
             ;;
         grep)
-            hx_grep
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help grep
+            else
+                hx_grep
+            fi
             ;;
         browse)
-            hx_browse
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help browse
+            else
+                hx_browse
+            fi
             ;;
         git-files)
-            hx_git_files
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help git-files
+            else
+                hx_git_files
+            fi
             ;;
         git-changed-files)
-            hx_git_changed_files
+            if [ "$1" = "--help" ]; then
+                show_subcommand_help git-changed-files
+            else
+                hx_git_changed_files
+            fi
             ;;
-       *)
+        *)
             echo "Unknown integration command: $command"
             exit 1
             ;;
