@@ -170,7 +170,7 @@ hx_explorer() {
 hx_explorer_tmux() {
   local basedir="$1"
   local session_name="$2"
-  local env_line="EDITOR=hx-open"
+  local env_line="EDITOR='hx-utils open'"
   local current_pane_id="${TMUX_PANE}"
   local broot_pane_id=$(tmux list-panes -F '#{pane_title} #{pane_id}' | grep -E '^broot ' | grep -v "$current_pane_id" | cut -d ' ' -f 2)
 
