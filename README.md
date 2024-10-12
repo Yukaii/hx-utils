@@ -59,6 +59,7 @@ Below is an example configuration for integrating hx-utils with Helix.
 [keys.normal.space.t]
 b = ":sh winmux sp fish > /dev/null"
 B = ":sh hx-utils blame > /dev/null"
+l = ":sh winmux popup lazygit > /dev/null"
 
 [keys.normal.space]
 e = ":sh hx-utils explorer"
