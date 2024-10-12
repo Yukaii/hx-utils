@@ -14,13 +14,13 @@ history_file="$HOME/.cache/hx-files-history"
 
 # List files in the git repository and allow user to select using fzf
 selected_files=$(git ls-files --full-name "$(git rev-parse --show-toplevel)" "$@" |
-    fzf --multi --height 100% --prompt 'files> ' \
-        --preview "$preview_cmd {}" --history="$history_file" --delimiter : --bind 'ctrl-q:select-all+accept')
+  fzf --multi --height 100% --prompt 'files> ' \
+    --preview "$preview_cmd {}" --history="$history_file" --delimiter : --bind 'ctrl-q:select-all+accept')
 
 # Check if files were selected
 if [ -n "$selected_files" ]; then
-    # Open each selected file with hx-utils
-    echo "$selected_files" | while read -r file; do
-        hx-utils open -d top "$file"
-    done
+  # Open each selected file with hx-utils
+  echo "$selected_files" | while read -r file; do
+    hx-utils open -d top "$file"
+  done
 fi
