@@ -11,6 +11,21 @@ source "${MODULES_DIR}/config.sh"
 source "${MODULES_DIR}/hx-open.sh"
 source "${MODULES_DIR}/hx-integration.sh"
 
+# Function to display help message
+show_help() {
+    echo "Usage: hx-utils [COMMAND] [OPTIONS]"
+    echo ""
+    echo "Available commands:"
+    echo "  open                Open a file in Helix editor"
+    echo "  blame               Show git blame information"
+    echo "  explorer            Open file explorer"
+    echo "  grep                Search for a pattern in files"
+    echo "  browse              Open a URL in the default browser"
+    echo "  git-files           List files tracked by git"
+    echo "  git-changed-files   List files changed in git"
+    echo "  help                Show this help message"
+}
+
 # Main function to handle command routing
 main() {
     case "$1" in
@@ -21,9 +36,12 @@ main() {
         blame|explorer|grep|browse|git-files|git-changed-files)
             hx_integration "$@"
             ;;
+        help)
+            show_help
+            ;;
         *)
             echo "Unknown command: $1"
-            echo "Available commands: open, blame, explorer, grep, browse, git-files, git-changed-files"
+            show_help
             exit 1
             ;;
     esac
