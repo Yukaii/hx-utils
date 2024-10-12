@@ -14,9 +14,11 @@ The original scripts have been significantly modified and extended to support mu
 ## Features
 
 - Open files in Helix from the terminal
-- Integrate Helix with other tools (git blame, file explorer, fuzzy finder)
+- Integrate Helix with other tools (git blame, file explorer, fuzzy finder, web browser)
 - Cross-multiplexer window management (supports tmux and WezTerm)
 - Fuzzy file search and opening
+- Git file and changed file listing
+- Web browsing integration for files at specific line numbers
 
 ## Prerequisites
 
@@ -25,16 +27,21 @@ The original scripts have been significantly modified and extended to support mu
 - ripgrep (rg)
 - fzf
 - bat
+- Git
+- `broot` (for the file explorer functionality)
+- `gh` (GitHub CLI for browsing files in a web browser)
 
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/yourusername/hx-utils.git
    cd hx-utils
    ```
 
 2. Run the setup script:
+
    ```bash
    ./setup.sh
    ```
@@ -43,21 +50,36 @@ The original scripts have been significantly modified and extended to support mu
 
 ## Usage
 
-### Example helix config
+### Example Helix Configuration
+
+Below is an example configuration for integrating hx-utils with Helix.
 
 ```toml
+# Terminal actions
+[keys.normal.space.t]
+b = ":sh winmux sp fish > /dev/null"
+B = ":sh hx-utils blame > /dev/null"
+
 [keys.normal.space]
 e = ":sh hx-utils explorer"
 
-[keys.normal.";"]
-b = ":sh hx-utils blame > /dev/null"
-f = ":sh hx-utils grep > /dev/null"
-t = ":sh winmux sp fish > /dev/null"
+[keys.normal.space.f]
+g = ":sh hx-utils git-files > /dev/null"
+w = ":sh hx-utils grep > /dev/null"
+d = ":sh hx-utils git-changed-files > /dev/null""
 ```
 
-### hx-utils
+### hx-utils Commands
 
-The main utility script. Use it to open files or integrate with other tools.
+The main utility script `hx-utils` provides several subcommands:
+
+- **open**: Opens a file in Helix, with options for split direction, pane type, and size.
+- **blame**: Displays Git blame information for the current file.
+- **explorer**: Opens a file explorer using `broot` and integrates with tmux or WezTerm.
+- **grep**: Performs a search using `ripgrep` within the project.
+- **browse**: Opens the current file at the specified line in a web browser using `gh browse`.
+- **git-files**: Lists files tracked by Git.
+- **git-changed-files**: Lists files that have changed in Git.
 
 ```bash
 hx-utils open [FILE]
@@ -65,34 +87,81 @@ hx-utils blame
 hx-utils explorer
 hx-utils grep
 hx-utils browse
+hx-utils git-files
+hx-utils git-changed-files
 ```
+
+### Subcommands Overview
+
+- **open**: Opens files in Helix, with options to control how the file is opened within the editor.
+
+  ```bash
+  hx-utils open [FILE] [DIRECTION] [SPLIT] [PERCENT]
+  ```
+
+  Options:
+
+  - `FILE`: The file to open.
+  - `DIRECTION`: The direction to split the pane (default: right).
+  - `SPLIT`: The type of split ('v' for vertical, 'h' for horizontal, default: vertical).
+  - `PERCENT`: The percentage size of the pane (default: 80%).
+
+- **blame**: Displays Git blame information for the current file in a pane.
+
+  ```bash
+  hx-utils blame
+  ```
+
+- **explorer**: Opens a file explorer using `broot` with integration for tmux or WezTerm.
+
+  ```bash
+  hx-utils explorer
+  ```
+
+- **grep**: Searches for a pattern using `ripgrep` and displays the results.
+
+  ```bash
+  hx-utils grep [PATTERN]
+  ```
+
+- **browse**: Opens the current file and line number in the web browser using GitHub’s `gh browse`.
+
+  ```bash
+  hx-utils browse
+  ```
+
+- **git-files**: Lists all files tracked by Git.
+
+  ```bash
+  hx-utils git-files
+  ```
+
+- **git-changed-files**: Lists all files changed in the current Git branch.
+
+  ```bash
+  hx-utils git-changed-files
+  ```
 
 ### winmux
 
-A cross-multiplexer window management utility.
+A cross-multiplexer window management utility. It supports both tmux and WezTerm for managing windows and panes.
 
 ```bash
 winmux [OPTION]... [COMMAND] [ARGS]...
 ```
 
 Options:
-- `-m, --mode`: Set the mode to 'tmux' or 'wezterm'
-- `-p, --percent`: Set the size of the panel as a percentage
-- `-h, --help`: Display help and exit
+
+- `-m, --mode`: Set the mode to 'tmux' or 'wezterm'.
+- `-p, --percent`: Set the size of the panel as a percentage.
+- `-h, --help`: Display help and exit.
 
 Commands:
-- `vsp`: Split vertically
-- `sp`: Split horizontally
-- `focus-left`, `focus-right`, `focus-up`, `focus-down`: Focus on adjacent panes
-- `popup`: Create a popup window
 
-### hx-grep
-
-A fuzzy finder utility for Helix.
-
-```bash
-hx-grep
-```
+- `vsp`: Split vertically.
+- `sp`: Split horizontally.
+- `focus-left`, `focus-right`, `focus-up`, `focus-down`: Focus on adjacent panes.
+- `popup`: Create a popup window.
 
 ### hx-open
 
@@ -109,52 +178,24 @@ hx-open [OPTIONS] [FILE]
 - `-m, --mode [tmux|wezterm]`: Specify the multiplexer mode. Auto-detected if not specified.
 - `-d, --direction [DIRECTION]`: Specify the pane direction ('top', 'bottom', 'left', 'right'). Default is 'right'.
 - `-s, --split [TYPE]`: Specify the split type ('v' for vertical, 'h' for horizontal, 'none' for no split).
-- `-p, --percent [PERCENT]`: Specify the default panel size percentage. Default is 80.
+- `-p, --percent [PERCENT]`: Specify the default panel size percentage. Default is 80%.
 - `-h, --help`: Display help and exit.
-
-#### Examples
-
-1. Open a file in the default right pane:
-   ```bash
-   hx-open /path/to/file.txt
-   ```
-
-2. Open a file in a new vertical split with 70% width:
-   ```bash
-   hx-open -d right -s v -p 70 /path/to/file.txt
-   ```
-
-3. Open a file in a new horizontal split at the bottom:
-   ```bash
-   hx-open -d bottom -s h /path/to/file.txt
-   ```
-
-4. Explicitly specify the multiplexer mode:
-   ```bash
-   hx-open -m tmux /path/to/file.txt
-   ```
-
-#### Integration with Other Programs
-
-You can set `hx-open` as the default editor for various programs. For example:
-
-- Git: `git config --global core.editor "hx-open"`
-- Environment variable: Add `export EDITOR="hx-open"` to your shell configuration file (e.g., `.bashrc` or `.zshrc`)
-
-This allows `hx-open` to be used seamlessly with other command-line tools that invoke an editor.
-
-#### Notes
-
-- `hx-open` requires either tmux or WezTerm to be running.
-- It attempts to reuse existing Helix instances if possible, opening new files in splits within the same instance.
-- The script sources `config.sh` from the hx-utils installation, ensuring consistent behavior with other hx-utils scripts.
 
 ## Updating
 
 To update hx-utils to the latest version:
 
-1. Pull the latest changes from the repository
-2. Run `make update`
+1. Pull the latest changes from the repository:
+
+   ```bash
+   git pull origin main
+   ```
+
+2. Run the update script:
+
+   ```bash
+   make update
+   ```
 
 ## Uninstalling
 
