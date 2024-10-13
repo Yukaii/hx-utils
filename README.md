@@ -70,7 +70,7 @@ B = ":sh hx-utils blame > /dev/null"
 l = ":sh winmux popup lazygit > /dev/null"
 
 [keys.normal.space]
-e = ":sh hx-utils explorer"
+e = ":sh hx-utils explorer > /dev/null"
 
 [keys.normal.space.f]
 g = ":sh hx-utils git-files > /dev/null"
