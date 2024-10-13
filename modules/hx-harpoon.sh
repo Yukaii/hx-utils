@@ -5,9 +5,9 @@ get_git_branch() {
   git rev-parse --abbrev-ref HEAD 2>/dev/null
 }
 
-# Function to hash the combination of PWD and git branch
+# Function to generate a simple hash using cksum (POSIX compliant)
 hash_combination() {
-  echo -n "$PWD $(get_git_branch)" | sha256sum | awk '{ print $1 }'
+  echo -n "$PWD $(get_git_branch)" | cksum | awk '{ print $1 }'
 }
 
 # Define the harpoon directory and file name based on PWD and git branch hash
