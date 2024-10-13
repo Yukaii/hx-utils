@@ -107,7 +107,7 @@ handle_tmux() {
   esac
 
   local size="${percent}%"
-  local pane_id=$(tmux list-panes -F '#{pane_title} #{pane_id}' | grep -E '^hx ' | grep -v "$TMUX_PANE" | awk '{ print $NF }')
+  local pane_id=$(tmux list-panes -F '#{pane_current_command} #{pane_id}' | grep -E '^hx ' | grep -v "$TMUX_PANE" | awk '{ print $NF }')
 
   if [ -n "$pane_id" ]; then
     if [ -n "$split" ]; then
