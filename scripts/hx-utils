@@ -9,6 +9,8 @@ source "${MODULES_DIR}/config.sh"
 
 # Source modules
 source "${MODULES_DIR}/hx-open.sh"
+source "${MODULES_DIR}/hx-harpoon.sh"
+
 source "${MODULES_DIR}/hx-integration.sh"
 
 # Function to display help message
@@ -23,13 +25,14 @@ show_help() {
   echo "  git-files           List files tracked by git"
   echo "  git-changed-files   List files changed in git"
   echo "  open                Open a file in Helix editor"
+  echo "  harpoon             Open Helix Harpoon"
   echo "  help                Show this help message"
 }
 
 # Main function to handle command routing
 main() {
   case "$1" in
-  blame | explorer | grep | browse | git-files | git-changed-files | open)
+  blame | explorer | grep | browse | git-files | git-changed-files | open | harpoon)
     hx_integration "$@"
     ;;
   help)

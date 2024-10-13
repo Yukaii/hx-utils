@@ -79,6 +79,19 @@ hx_integration() {
       echo "Options:"
       echo "  --help    Show this help message"
       ;;
+    harpoon)
+      echo "Usage: hx harpoon [OPTIONS]"
+      echo ""
+      echo "Manage harpoon files."
+      echo ""
+      echo "Options:"
+      echo "  add    Add the current file to harpoon."
+      echo "  list   List all harpoon files."
+      echo "  remove Remove the current file from harpoon."
+      echo "  open   Open the nth item from harpoon."
+      echo "  edit   Edit the list with default editor."
+      echo "  --help Show this help message"
+      ;;
     *)
       echo "Unknown subcommand: $1"
       exit 1
@@ -134,6 +147,13 @@ hx_integration() {
       show_subcommand_help git-changed-files
     else
       hx_git_changed_files
+    fi
+    ;;
+  harpoon)
+    if [ "$1" = "--help" ]; then
+      show_subcommand_help harpoon
+    else
+      hx_harpoon "$@"
     fi
     ;;
   *)
