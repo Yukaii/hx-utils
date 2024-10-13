@@ -89,6 +89,7 @@ hx_integration() {
       echo "  list   List all harpoon files."
       echo "  remove Remove the current file from harpoon."
       echo "  open   Open the nth item from harpoon."
+      echo "  edit   Edit the list with default editor."
       echo "  --help Show this help message"
       ;;
     *)

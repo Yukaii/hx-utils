@@ -64,6 +64,15 @@ harpoon_open() {
   fi
 }
 
+# Function to edit HARPOON_FILE with $EDITOR in a winmux popup
+harpoon_edit() {
+  if [ -n "$EDITOR" ]; then
+    winmux popup "$EDITOR" "$HARPOON_FILE"
+  else
+    echo "Error: No editor defined. Please set the EDITOR environment variable."
+  fi
+}
+
 # Main function to handle harpoon commands
 hx_harpoon() {
   case "$1" in
@@ -79,8 +88,11 @@ hx_harpoon() {
     open)
       harpoon_open "$2"
       ;;
+    edit)
+      harpoon_edit
+      ;;
     *)
-      echo "Usage: harpoon {add|list|remove|open <index>}"
+      echo "Usage: harpoon {add|list|remove|open <index>|edit}"
       ;;
   esac
 }
