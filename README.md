@@ -23,11 +23,17 @@ The original scripts have been significantly modified and extended to support mu
 
 ## Screenshots
 
+File explorer with broot
+
 ![broot](./docs/images/broot.png)
 
+TUI apps integrations
 ![winmux-lazygit](./docs/images/winmux-lazygit.png)
 
+fzf git files
 ![fzf-git-files](./docs/images/fzf-git-files.png)
+
+Harpoon-liked quick jumping
 
 https://github.com/user-attachments/assets/ee79e402-c172-4e0c-998d-69d903a5ad3e
 
