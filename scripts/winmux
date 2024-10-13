@@ -114,7 +114,7 @@ wezterm_size_option() {
 }
 
 wezterm_vsp() {
-  local cmd="${*:1}"
+  local cmd="$@"
   local size_option="$(wezterm_size_option)"
 
   if [ -n "$cmd" ]; then
@@ -125,7 +125,7 @@ wezterm_vsp() {
 }
 
 wezterm_sp() {
-  local cmd="${*:1}"
+  local cmd="$@"
   local size_option="$(wezterm_size_option)"
 
   if [ -n "$cmd" ]; then
