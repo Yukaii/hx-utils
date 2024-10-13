@@ -75,7 +75,7 @@ e = ":sh hx-utils explorer"
 [keys.normal.space.f]
 g = ":sh hx-utils git-files > /dev/null"
 w = ":sh hx-utils grep > /dev/null"
-d = ":sh hx-utils git-changed-files > /dev/null""
+d = ":sh hx-utils git-changed-files > /dev/null"
 
 # Harpoon mode
 [keys.normal.space.o]
