@@ -76,6 +76,21 @@ e = ":sh hx-utils explorer"
 g = ":sh hx-utils git-files > /dev/null"
 w = ":sh hx-utils grep > /dev/null"
 d = ":sh hx-utils git-changed-files > /dev/null""
+
+# Harpoon mode
+[keys.normal.space.o]
+l = ":sh hx-utils harpoon list"
+a = ":sh hx-utils harpoon add"
+d = ":sh hx-utils harpoon remove"
+1 = ":sh winmux -p 1 sp 'hx-utils harpoon open 1'"
+2 = ":sh winmux -p 1 sp 'hx-utils harpoon open 2'"
+3 = ":sh winmux -p 1 sp 'hx-utils harpoon open 3'"
+4 = ":sh winmux -p 1 sp 'hx-utils harpoon open 4'"
+5 = ":sh winmux -p 1 sp 'hx-utils harpoon open 5'"
+6 = ":sh winmux -p 1 sp 'hx-utils harpoon open 6'"
+7 = ":sh winmux -p 1 sp 'hx-utils harpoon open 7'"
+8 = ":sh winmux -p 1 sp 'hx-utils harpoon open 8'"
+9 = ":sh winmux -p 1 sp 'hx-utils harpoon open 9'"
 ```
 
 ### hx-utils Commands
