@@ -19,6 +19,7 @@ The original scripts have been significantly modified and extended to support mu
 - Fuzzy file search and opening
 - Git file and changed file listing
 - Web browsing integration for files at specific line numbers
+- Harpoon-liked bookmark jumping feature
 
 ## Screenshots
 
