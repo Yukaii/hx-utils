@@ -53,12 +53,18 @@ harpoon_remove() {
   echo "Removed $current_file from harpoon."
 }
 
-# Function to open nth item from harpoon
+# Function to open nth item from harpoon, remove entry if file doesn't exist
 harpoon_open() {
   local index=$1
   local file=$(sed "${index}q;d" "$HARPOON_FILE")
+
   if [ -n "$file" ]; then
-    hx-utils open "$file"
+    if [ -f "$file" ]; then
+      hx-utils open "$file"
+    else
+      echo "File does not exist. Removing entry from harpoon."
+      grep -v "^$file$" "$HARPOON_FILE" > "$HARPOON_FILE.tmp" && mv "$HARPOON_FILE.tmp" "$HARPOON_FILE"
+    fi
   else
     echo "Invalid index."
   fi
