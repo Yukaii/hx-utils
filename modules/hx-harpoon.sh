@@ -60,7 +60,7 @@ harpoon_open() {
 
   if [ -n "$file" ]; then
     if [ -f "$file" ]; then
-      hx-utils open "$file"
+      hx-utils open -d top "$file"
     else
       echo "File does not exist. Removing entry from harpoon."
       grep -v "^$file$" "$HARPOON_FILE" > "$HARPOON_FILE.tmp" && mv "$HARPOON_FILE.tmp" "$HARPOON_FILE"
