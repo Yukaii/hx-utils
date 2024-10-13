@@ -29,6 +29,8 @@ The original scripts have been significantly modified and extended to support mu
 
 ![fzf-git-files](./docs/images/fzf-git-files.png)
 
+https://github.com/user-attachments/assets/ee79e402-c172-4e0c-998d-69d903a5ad3e
+
 ## Prerequisites
 
 - Helix editor
