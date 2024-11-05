@@ -193,11 +193,45 @@ hx_explorer_tmux() {
   local env_line="EDITOR='hx-utils open'"
   local current_pane_id="${TMUX_PANE}"
   local broot_pane_id=$(tmux list-panes -F '#{pane_title} #{pane_id}' | grep -E '^broot ' | grep -v "$current_pane_id" | cut -d ' ' -f 2)
+  local absolute=$(realpath "$PWD/$basedir")
+  local base=$(basename "$basedir")
 
   if [ -z "$broot_pane_id" ]; then
-    tmux split-window -hb -l 23% "$env_line broot --listen $session_name"
+    # If no broot process is found, split the pane and run broot
+    tmux split-window -hb -l 23% "$env_line broot --listen $session_name $basedir"
+
+    # Wait until broot returns a valid response for the session or timeout after 2 seconds
+    local max_wait=20  # 2 seconds total (20 * 0.1s)
+    local wait_count=0
+    local root
+
+    while true; do
+        root=$(broot --send "$session_name" --get-root)
+        if [ -n "$root" ]; then
+            break
+        fi
+        sleep 0.1
+        wait_count=$((wait_count + 1))
+
+        # Check if max_wait time has been exceeded
+        if [ "$wait_count" -ge "$max_wait" ]; then
+            echo "Timeout waiting for broot to initialize."
+            break
+        fi
+    done
+
+    broot --send "$session_name" -c ":select $base"
   else
-    broot --send $session_name -c ":focus $PWD/$basedir"
+    # If a broot process is already running in a different pane, prepare to send commands to it
+    root=$(broot --send "$session_name" --get-root)
+    if [ "$root" != "$absolute" ] && [ "$basedir" != '.' ]; then
+      # Calculate relative path if root differs and focus it
+      relative_path=$(grealpath --relative-to="$root" "$absolute")
+      broot --send "$session_name" -c ":focus $relative_path"
+    fi
+
+    broot --send "$session_name" -c ":select $base"
+    # Activate the pane with the broot process
     tmux select-pane -t "$broot_pane_id"
   fi
 }
