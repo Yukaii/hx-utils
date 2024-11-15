@@ -25,7 +25,7 @@ The original scripts have been significantly modified and extended to support mu
 
 File explorer with broot
 
-![broot](./docs/images/broot.png)
+https://github.com/user-attachments/assets/d193c18e-81c4-4bbd-98fc-c170ac34602e
 
 TUI apps integrations
 ![winmux-lazygit](./docs/images/winmux-lazygit.png)
