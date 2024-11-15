@@ -187,71 +187,88 @@ hx_explorer() {
   esac
 }
 
-hx_explorer_tmux() {
+# Common function to get the current filename
+get_filename() {
   local file_info=($(get_current_file_info))
   local filename="${file_info[0]}"
+  echo "$filename"
+}
+
+# Common function to check if broot is initialized
+wait_for_broot() {
+  local session_name="$1"
+  local max_wait=20  # 2 seconds total (20 * 0.1s)
+  local wait_count=0
+  local root
+
+  while true; do
+    root=$(broot --send "$session_name" --get-root)
+    if [ -n "$root" ]; then
+      break
+    fi
+    sleep 0.1
+    wait_count=$((wait_count + 1))
+
+    if [ "$wait_count" -ge "$max_wait" ]; then
+      echo "Timeout waiting for broot to initialize."
+      break
+    fi
+  done
+}
+
+# Common function to send commands to broot
+send_broot_commands() {
+  local session_name="$1"
+  local absolute="$2"
+  local filename="$3"
+  local dir=$(dirname "$filename")
+  local root=$(broot --send "$session_name" --get-root)
+
+  if [ "$root" != "$absolute" ] && [ "$dir" != '.' ]; then
+    local relative_path=$(grealpath --relative-to="$root" "$absolute")
+    broot --send "$session_name" -c ":focus $relative_path"
+  fi
+
+  broot --send "$session_name" -c ":select $(basename "$filename")"
+}
+
+# TMUX explorer function
+hx_explorer_tmux() {
+  local filename=$(get_filename)
   local basedir="$1"
   local session_name="$2"
   local env_line="EDITOR='hx-utils open'"
   local current_pane_id="${TMUX_PANE}"
   local broot_pane_id=$(tmux list-panes -F '#{pane_title} #{pane_id}' | grep -E '^broot ' | grep -v "$current_pane_id" | cut -d ' ' -f 2)
   local absolute=$(realpath "$PWD/$basedir")
-  local base=$(basename "$filename")
-  local dir=$(dirname "$filename")
 
   if [ -z "$broot_pane_id" ]; then
-    # If no broot process is found, split the pane and run broot
     tmux split-window -hb -l 23% "$env_line broot --listen $session_name $basedir"
-
-    # Wait until broot returns a valid response for the session or timeout after 2 seconds
-    local max_wait=20  # 2 seconds total (20 * 0.1s)
-    local wait_count=0
-    local root
-
-    while true; do
-        root=$(broot --send "$session_name" --get-root)
-        if [ -n "$root" ]; then
-            break
-        fi
-        sleep 0.1
-        wait_count=$((wait_count + 1))
-
-        # Check if max_wait time has been exceeded
-        if [ "$wait_count" -ge "$max_wait" ]; then
-            echo "Timeout waiting for broot to initialize."
-            break
-        fi
-    done
-
-    broot --send "$session_name" -c ":select $base"
+    wait_for_broot "$session_name"
+    broot --send "$session_name" -c ":select $(basename "$filename")"
   else
-    # If a broot process is already running in a different pane, prepare to send commands to it
-    root=$(broot --send "$session_name" --get-root)
-    if [ "$root" != "$absolute" ] && [ "$dir" != '.' ]; then
-      # Calculate relative path if root differs and focus it
-      relative_path=$(grealpath --relative-to="$root" "$absolute")
-      broot --send "$session_name" -c ":focus $relative_path"
-    fi
-
-    broot --send "$session_name" -c ":select $base"
-    # Activate the pane with the broot process
+    send_broot_commands "$session_name" "$absolute" "$filename"
     tmux select-pane -t "$broot_pane_id"
   fi
 }
 
+# WezTerm explorer function
 hx_explorer_wezterm() {
+  local filename=$(get_filename)
   local basedir="$1"
   local session_name="$2"
   local left_pane_id=$(wezterm cli get-pane-direction left)
+  local absolute=$(realpath "$PWD/$basedir")
 
-  if [ -z "${left_pane_id}" ]; then
-    wezterm cli split-pane --left --percent 23 -- broot --listen $session_name
+  if [ -z "$left_pane_id" ]; then
+    wezterm cli split-pane --left --percent 23 -- broot --listen $session_name $basedir
+    wait_for_broot "$session_name"
+    broot --send "$session_name" -c ":select $(basename "$filename")"
   else
-    broot --send $session_name -c ":focus $PWD/$basedir"
+    send_broot_commands "$session_name" "$absolute" "$filename"
     wezterm cli activate-pane-direction left
   fi
 }
-
 hx_grep() {
   winmux sp "hx-grep"
 }
