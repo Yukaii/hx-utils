@@ -188,13 +188,16 @@ hx_explorer() {
 }
 
 hx_explorer_tmux() {
+  local file_info=($(get_current_file_info))
+  local filename="${file_info[0]}"
   local basedir="$1"
   local session_name="$2"
   local env_line="EDITOR='hx-utils open'"
   local current_pane_id="${TMUX_PANE}"
   local broot_pane_id=$(tmux list-panes -F '#{pane_title} #{pane_id}' | grep -E '^broot ' | grep -v "$current_pane_id" | cut -d ' ' -f 2)
   local absolute=$(realpath "$PWD/$basedir")
-  local base=$(basename "$basedir")
+  local base=$(basename "$filename")
+  local dir=$(dirname "$filename")
 
   if [ -z "$broot_pane_id" ]; then
     # If no broot process is found, split the pane and run broot
@@ -224,7 +227,7 @@ hx_explorer_tmux() {
   else
     # If a broot process is already running in a different pane, prepare to send commands to it
     root=$(broot --send "$session_name" --get-root)
-    if [ "$root" != "$absolute" ] && [ "$basedir" != '.' ]; then
+    if [ "$root" != "$absolute" ] && [ "$dir" != '.' ]; then
       # Calculate relative path if root differs and focus it
       relative_path=$(grealpath --relative-to="$root" "$absolute")
       broot --send "$session_name" -c ":focus $relative_path"
