@@ -59,10 +59,22 @@ hx_integration() {
     browse)
       echo "Usage: hx browse [OPTIONS]"
       echo ""
-      echo "Open a URL in the default browser."
+      echo "Open the git repository URL in the default browser."
       echo ""
       echo "Options:"
-      echo "  --help    Show this help message"
+      echo "  --filename FILE  Specify the file to browse"
+      echo "  --line NUM      Specify the line number"
+      echo "  --help          Show this help message"
+      ;;
+    copy-permalink)
+      echo "Usage: hx copy-permalink [OPTIONS]"
+      echo ""
+      echo "Copy the git repository URL to clipboard."
+      echo ""
+      echo "Options:"
+      echo "  --filename FILE  Specify the file to link"
+      echo "  --line NUM      Specify the line number"
+      echo "  --help          Show this help message"
       ;;
     git-files)
       echo "Usage: hx git-files [OPTIONS]"
@@ -171,7 +183,14 @@ hx_integration() {
     if [ "$1" = "--help" ]; then
       show_subcommand_help browse
     else
-      hx_browse
+      hx_browse "$@"
+    fi
+    ;;
+  copy-permalink)
+    if [ "$1" = "--help" ]; then
+      show_subcommand_help copy-permalink
+    else
+      hx_copy_permalink "$@"
     fi
     ;;
   git-files)
@@ -319,10 +338,45 @@ hx_git_changed_files() {
   winmux sp "hx-git-changed-files"
 }
 
-hx_browse() {
-  local file_info=($(get_current_file_info))
-  local filename="${file_info[0]}"
-  local line_number="${file_info[1]}"
+hx_copy_permalink() {
+  if ! parse_common_options "$@"; then
+    echo "Unknown option: $1"
+    return 1
+  fi
 
-  gh browse $filename:$line_number
+  if [ -z "$filename" ]; then
+    # If no filename provided, get current file
+    local file_info=($(get_current_file_info))
+    filename="${file_info[0]}"
+    line="${file_info[1]}"
+  fi
+
+  local url=$(gitlinker run --file "$filename" --start-line "$line")
+  if [[ $url =~ ^https?:// ]]; then
+    echo "$url" | pbcopy
+    echo "Copied to clipboard: $url"
+  else
+    echo "$url"
+  fi
+}
+
+hx_browse() {
+  if ! parse_common_options "$@"; then
+    echo "Unknown option: $1"
+    return 1
+  fi
+
+  if [ -z "$filename" ]; then
+    # If no filename provided, get current file
+    local file_info=($(get_current_file_info))
+    filename="${file_info[0]}"
+    line="${file_info[1]}"
+  fi
+
+  local url=$(gitlinker run --file "$filename" --start-line "$line")
+  if [[ $url =~ ^https?:// ]]; then
+    open "$url"
+  else
+    echo "$url"
+  fi
 }

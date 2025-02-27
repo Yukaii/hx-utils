@@ -21,7 +21,8 @@ show_help() {
   echo "  blame               Show git blame information"
   echo "  explorer            Open file explorer"
   echo "  grep                Search for a pattern in files"
-  echo "  browse              Open a URL in the default browser"
+  echo "  browse              Open the git repository URL in browser"
+  echo "  copy-permalink      Copy the git repository URL to clipboard"
   echo "  git-files           List files tracked by git"
   echo "  git-changed-files   List files changed in git"
   echo "  open                Open a file in Helix editor"
@@ -32,7 +33,7 @@ show_help() {
 # Main function to handle command routing
 main() {
   case "$1" in
-  blame | explorer | grep | browse | git-files | git-changed-files | open | harpoon)
+  blame | explorer | grep | browse | copy-permalink | git-files | git-changed-files | open | harpoon)
     hx_integration "$@"
     ;;
   help)
