@@ -1,17 +1,5 @@
 #!/usr/bin/env bash
 
-# Get current file information
-get_current_file_info() {
-  local status_line=$(get_helix_status)
-  local filename=$(echo $status_line | awk '{ print $1}')
-  local line_number=$(echo $status_line | awk '{ print $2}')
-  local basedir=$(dirname "$filename")
-  local basename=$(basename "$filename")
-  local basename_without_extension="${basename%.*}"
-  local extension="${filename##*.}"
-
-  echo "$filename $line_number $basedir $basename $basename_without_extension $extension"
-}
 
 hx_integration() {
   local command="$1"
@@ -222,11 +210,17 @@ hx_integration() {
 }
 
 hx_blame() {
-  local file_info=($(get_current_file_info))
-  local filename="${file_info[0]}"
-  local line_number="${file_info[1]}"
+  if ! parse_common_options "$@"; then
+    echo "Unknown option: $1"
+    return 1
+  fi
 
-  winmux sp "tig blame $filename +$line_number"
+  if [ -z "$filename" ]; then
+    echo "Error: --filename is required"
+    return 1
+  fi
+
+  winmux sp "tig blame $filename +${line:-1}"
 }
 
 hx_explorer() {
@@ -244,12 +238,6 @@ hx_explorer() {
   esac
 }
 
-# Common function to get the current filename
-get_filename() {
-  local file_info=($(get_current_file_info))
-  local filename="${file_info[0]}"
-  echo "$filename"
-}
 
 # Common function to check if broot is initialized
 wait_for_broot() {
@@ -345,10 +333,8 @@ hx_copy_permalink() {
   fi
 
   if [ -z "$filename" ]; then
-    # If no filename provided, get current file
-    local file_info=($(get_current_file_info))
-    filename="${file_info[0]}"
-    line="${file_info[1]}"
+    echo "Error: --filename is required"
+    return 1
   fi
 
   local url=$(gitlinker run --file "$filename" --start-line "$line")
