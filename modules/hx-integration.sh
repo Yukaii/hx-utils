@@ -118,7 +118,7 @@ hx_integration() {
     if [ "$1" = "--help" ]; then
       show_subcommand_help explorer
     else
-      hx_explorer
+      hx_explorer "$@"
     fi
     ;;
   grep)
@@ -172,17 +172,16 @@ hx_blame() {
 }
 
 hx_explorer() {
-  local file_info=($(get_current_file_info))
-  local filename="${file_info[0]}"
-  local basedir="${file_info[2]}"
+  local filename="$1"
+  local basedir=$(dirname "$filename")
   local session_name=$(get_session_name)
 
   case $HX_MODE in
   tmux)
-    hx_explorer_tmux "$basedir" "$session_name"
+    hx_explorer_tmux "$filename" "$basedir" "$session_name"
     ;;
   wezterm)
-    hx_explorer_wezterm "$basedir" "$session_name"
+    hx_explorer_wezterm "$filename" "$basedir" "$session_name"
     ;;
   esac
 }
@@ -234,9 +233,9 @@ send_broot_commands() {
 
 # TMUX explorer function
 hx_explorer_tmux() {
-  local filename=$(get_filename)
-  local basedir="$1"
-  local session_name="$2"
+  local filename="$1"
+  local basedir="$2"
+  local session_name="$3"
   local env_line="EDITOR='hx-utils open'"
   local current_pane_id="${TMUX_PANE}"
   local broot_pane_id=$(tmux list-panes -F '#{pane_title} #{pane_id}' | grep -E '^broot ' | grep -v "$current_pane_id" | cut -d ' ' -f 2)
@@ -254,9 +253,9 @@ hx_explorer_tmux() {
 
 # WezTerm explorer function
 hx_explorer_wezterm() {
-  local filename=$(get_filename)
-  local basedir="$1"
-  local session_name="$2"
+  local filename="$1"
+  local basedir="$2"
+  local session_name="$3"
   local left_pane_id=$(wezterm cli get-pane-direction left)
   local absolute=$(realpath "$PWD/$basedir")
 
