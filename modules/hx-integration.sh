@@ -45,7 +45,8 @@ hx_integration() {
       echo "Open file explorer."
       echo ""
       echo "Options:"
-      echo "  --help    Show this help message"
+      echo "  --filename FILE  Specify the file to focus"
+      echo "  --help          Show this help message"
       ;;
     grep)
       echo "Usage: hx grep [OPTIONS]"
@@ -99,6 +100,33 @@ hx_integration() {
     esac
   }
 
+  # Parse common options
+  local filename=""
+  local line=""
+  local column=""
+
+  parse_common_options() {
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --filename)
+          filename="$2"
+          shift 2
+          ;;
+        --line)
+          line="$2"
+          shift 2
+          ;;
+        --column)
+          column="$2"
+          shift 2
+          ;;
+        *)
+          return 1
+          ;;
+      esac
+    done
+  }
+
   case "$command" in
   open)
     if [ "$1" = "--help" ]; then
@@ -118,7 +146,18 @@ hx_integration() {
     if [ "$1" = "--help" ]; then
       show_subcommand_help explorer
     else
-      hx_explorer "$@"
+      if ! parse_common_options "$@"; then
+        echo "Unknown option: $1"
+        return 1
+      fi
+
+      if [ -z "$filename" ]; then
+        echo "Error: --filename is required"
+        return 1
+      fi
+
+      # Only pass filename to explorer
+      hx_explorer "$filename"
     fi
     ;;
   grep)
