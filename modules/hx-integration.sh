@@ -22,10 +22,12 @@ hx_integration() {
     blame)
       echo "Usage: hx blame [OPTIONS]"
       echo ""
-      echo "Show git blame information for the current file."
+      echo "Show git blame information for the file."
       echo ""
       echo "Options:"
-      echo "  --help    Show this help message"
+      echo "  --filename FILE  Specify the file to blame"
+      echo "  --line NUM      Specify the line number"
+      echo "  --help          Show this help message"
       ;;
     explorer)
       echo "Usage: hx explorer [OPTIONS]"
@@ -139,7 +141,17 @@ hx_integration() {
     if [ "$1" = "--help" ]; then
       show_subcommand_help blame
     else
-      hx_blame
+      if ! parse_common_options "$@"; then
+        echo "Unknown option: $1"
+        return 1
+      fi
+
+      if [ -z "$filename" ]; then
+        echo "Error: --filename is required"
+        return 1
+      fi
+
+      hx_blame "$filename" "$line"
     fi
     ;;
   explorer)
@@ -171,14 +183,34 @@ hx_integration() {
     if [ "$1" = "--help" ]; then
       show_subcommand_help browse
     else
-      hx_browse "$@"
+      if ! parse_common_options "$@"; then
+        echo "Unknown option: $1"
+        return 1
+      fi
+
+      if [ -z "$filename" ]; then
+        echo "Error: --filename is required"
+        return 1
+      fi
+
+      hx_browse "$filename" "$line"
     fi
     ;;
   copy-permalink)
     if [ "$1" = "--help" ]; then
       show_subcommand_help copy-permalink
     else
-      hx_copy_permalink "$@"
+      if ! parse_common_options "$@"; then
+        echo "Unknown option: $1"
+        return 1
+      fi
+
+      if [ -z "$filename" ]; then
+        echo "Error: --filename is required"
+        return 1
+      fi
+
+      hx_copy_permalink "$filename" "$line"
     fi
     ;;
   git-files)
@@ -210,15 +242,8 @@ hx_integration() {
 }
 
 hx_blame() {
-  if ! parse_common_options "$@"; then
-    echo "Unknown option: $1"
-    return 1
-  fi
-
-  if [ -z "$filename" ]; then
-    echo "Error: --filename is required"
-    return 1
-  fi
+  local filename="$1"
+  local line="$2"
 
   winmux sp "tig blame $filename +${line:-1}"
 }
@@ -327,15 +352,8 @@ hx_git_changed_files() {
 }
 
 hx_copy_permalink() {
-  if ! parse_common_options "$@"; then
-    echo "Unknown option: $1"
-    return 1
-  fi
-
-  if [ -z "$filename" ]; then
-    echo "Error: --filename is required"
-    return 1
-  fi
+  local filename="$1"
+  local line="$2"
 
   local url=$(gitlinker run --file "$filename" --start-line "$line")
   if [[ $url =~ ^https?:// ]]; then
@@ -347,17 +365,8 @@ hx_copy_permalink() {
 }
 
 hx_browse() {
-  if ! parse_common_options "$@"; then
-    echo "Unknown option: $1"
-    return 1
-  fi
-
-  if [ -z "$filename" ]; then
-    # If no filename provided, get current file
-    local file_info=($(get_current_file_info))
-    filename="${file_info[0]}"
-    line="${file_info[1]}"
-  fi
+  local filename="$1"
+  local line="$2"
 
   local url=$(gitlinker run --file "$filename" --start-line "$line")
   if [[ $url =~ ^https?:// ]]; then
